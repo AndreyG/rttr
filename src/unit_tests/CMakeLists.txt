@@ -49,10 +49,10 @@ target_link_libraries(unit_tests RTTR::Core unit_test_base Catch2::Catch)
 add_dependencies(unit_tests RTTR::Core)
 set_target_properties(unit_tests PROPERTIES DEBUG_POSTFIX ${RTTR_DEBUG_POSTFIX}
                                             FOLDER "Testing"
-                                            INSTALL_RPATH "${RTTR_EXECUTABLE_INSTALL_RPATH}"
-                                            CXX_STANDARD ${MAX_CXX_STANDARD})
+                                            INSTALL_RPATH "${RTTR_EXECUTABLE_INSTALL_RPATH}")
 
 set_compiler_warnings(unit_tests)
+target_compile_options(unit_tests PRIVATE "-std=c++2a" "-freflection")
 
 if (MSVC)
     target_compile_options(unit_tests PRIVATE /bigobj) 
