@@ -98,7 +98,7 @@ class basic_string_view
         /*!
          * \brief Replaces the this view with that of \p other view.
          */
-        basic_string_view& operator=(const basic_string_view& other) RTTR_NOEXCEPT;
+        RTTR_CXX14_CONSTEXPR basic_string_view& operator=(const basic_string_view& other) RTTR_NOEXCEPT;
         RTTR_CXX14_CONSTEXPR void swap(basic_string_view& s) RTTR_NOEXCEPT;
 
         /*!

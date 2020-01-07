@@ -78,7 +78,7 @@ basic_string_view<CharT, Traits>::basic_string_view(const std::basic_string<Char
 /////////////////////////////////////////////////////////////////////////////////////////
 
 template<typename CharT, typename Traits>
-basic_string_view<CharT, Traits>&
+RTTR_CXX14_CONSTEXPR basic_string_view<CharT, Traits>&
 basic_string_view<CharT, Traits>::operator=(const basic_string_view<CharT, Traits>& other) RTTR_NOEXCEPT
 {
     m_data = other.m_data;
