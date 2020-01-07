@@ -26,6 +26,7 @@
 *************************************************************************************/
 
 #include <rttr/registration>
+#include <rttr/auto_registration.h>
 
 using namespace rttr;
 using namespace std;
@@ -84,10 +85,7 @@ RTTR_REGISTRATION
         metadata(ui_metainfo::description, "List of Weekdays.")
     );
 
-    registration::enumeration<some_enum>("some_enum")
-    (
-        value("nothing_fancy", some_enum::nothing_fancy)
-    );
+    auto_enumeration<some_enum>();
 
     registration::class_<enum_test_class>("enum_test_class")
         .enumeration<enum_test_class::color>("enum_test_class::color")
