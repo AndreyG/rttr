@@ -26,6 +26,7 @@
 *************************************************************************************/
 
 #include <rttr/registration>
+#include <rttr/auto_registration.h>
 #include <catch/catch.hpp>
 
 using namespace rttr;
@@ -53,15 +54,9 @@ struct method_invoke_test
 
 RTTR_REGISTRATION
 {
-    registration::class_<method_invoke_test>("method_invoke_test")
-        .method("func_0", &method_invoke_test::func_0)
-        .method("func_1", &method_invoke_test::func_1)
-        .method("func_2", &method_invoke_test::func_2)
-        .method("func_3", &method_invoke_test::func_3)
-        .method("func_4", &method_invoke_test::func_4)
-        .method("func_5", &method_invoke_test::func_5)
-        .method("func_6", &method_invoke_test::func_6)
-        .method("func_7", &method_invoke_test::func_7)
+    auto clazz = make_registration_class<method_invoke_test>();
+    register_methods(clazz);
+    clazz
         .method("func_8", std::function<int(int)>([](int value){ return value; }))
         .method("func_9", [](int value){ return value; })
         ;

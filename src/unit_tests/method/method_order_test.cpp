@@ -26,6 +26,7 @@
 *************************************************************************************/
 
 #include <rttr/registration>
+#include <rttr/auto_registration.h>
 #include <catch/catch.hpp>
 #include <string>
 
@@ -58,14 +59,8 @@ struct method_order_test_derived : method_order_test_base
 
 RTTR_REGISTRATION
 {
-    registration::class_<method_order_test_base>("method_order_test_base")
-        .method("whoami", &method_order_test_base::whoami)
-        .method("vwhoami", &method_order_test_base::vwhoami)
-        ;
-    registration::class_<method_order_test_derived>("method_order_test_derived")
-        .method("whoami", &method_order_test_derived::whoami)
-        .method("vwhoami", &method_order_test_derived::vwhoami)
-        ;
+    register_methods<method_order_test_base>();
+    register_methods<method_order_test_derived>();
 }
 
 // approach 1 looks up the "method instance"
