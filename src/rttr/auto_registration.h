@@ -27,8 +27,7 @@ void auto_enumeration()
 {
     constexpr auto enumerators = get_enumerators<Enum_Type>();
     constexpr auto enum_name = meta::name_of(reflexpr(Enum_Type));
-    std::apply(registration::enumeration<Enum_Type>(enum_name),
-               std::array /*create copy as temporary workaround for rttr bug*/ (enumerators));
+    registration::enumeration<Enum_Type>(enum_name)(enumerators);
 }
 
 template<typename MemberFuncPtr>

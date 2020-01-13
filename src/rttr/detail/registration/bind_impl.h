@@ -794,6 +794,13 @@ class registration::bind<detail::enum_, Class_Type, Enum_Type> : public registra
             return std::move(enum_wrapper);
         }
 
+        template<typename E_Type, size_t enum_count>
+        static RTTR_INLINE std::unique_ptr<detail::enumeration_wrapper_base> create_custom_enum(std::array<detail::enum_data<E_Type>, enum_count> const & data)
+        {
+            std::array<detail::metadata, 0> metadata;
+            return detail::make_unique<detail::enumeration_wrapper<E_Type, enum_count, 0>>(data, metadata);
+        }
+
     public:
         bind(const std::shared_ptr<detail::registration_executer>& reg_exec, string_view name)
         :   registration_derived_t<Class_Type>(reg_exec), m_reg_exec(reg_exec), m_declared_type(type::template get<Class_Type>())
@@ -827,6 +834,13 @@ class registration::bind<detail::enum_, Class_Type, Enum_Type> : public registra
         registration_derived_t<Class_Type> operator()(Args&&... arg)
         {
             m_enum = create_custom_enum<Enum_Type>(std::forward<Args>(arg)...);
+            return registration_derived_t<Class_Type>(m_reg_exec);
+        }
+
+        template<size_t N>
+        registration_derived_t<Class_Type> operator()(std::array<detail::enum_data<Enum_Type>, N> const & data)
+        {
+            m_enum = create_custom_enum<Enum_Type>(data);
             return registration_derived_t<Class_Type>(m_reg_exec);
         }
     private:
