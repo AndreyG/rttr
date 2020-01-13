@@ -30,64 +30,6 @@ void auto_enumeration()
     registration::enumeration<Enum_Type>(enum_name)(enumerators);
 }
 
-template<typename MemberFuncPtr>
-struct method_t
-{
-    const char * name;
-    MemberFuncPtr pointer;
-};
-
-template<typename Class_Type, meta::info method>
-consteval auto make_method() {
-    constexpr auto pointer = &Class_Type::unqualid(method);
-    return method_t<decltype(pointer)> { meta::name_of(method), pointer };
-}
-
-consteval bool is_method(meta::info func)
-{
-    return !meta::is_constructor(func) &&
-           !meta::is_destructor(func) &&
-           !meta::is_special_member_function(func);
-}
-
-consteval size_t methods_count(meta::info class_reflection)
-{
-    size_t result = 0;
-    for (meta::member_fn_iterator it(class_reflection); !meta::is_invalid(*it); ++it)
-    {
-        if (!is_method(*it))
-            continue;
-        ++result;
-    }
-    return result;
-}
-
-template<size_t I>
-consteval meta::info get_method(meta::member_fn_iterator it)
-{
-    for (size_t i = 0; ; ++it)
-    {
-        if (!is_method(*it))
-            continue;
-        if (i == I)
-            return *it;
-        ++i;
-    }
-}
-
-template<typename Class_Type, size_t... I>
-consteval auto get_methods_impl(std::index_sequence<I...>)
-{
-    constexpr meta::member_fn_iterator it(reflexpr(Class_Type));
-    return std::tuple(make_method<Class_Type, get_method<I>(it)>()...);
-}
-
-template<typename Class_Type>
-consteval auto get_methods()
-{
-    return get_methods_impl<Class_Type>(std::make_index_sequence<methods_count(reflexpr(Class_Type))>());
-}
-
 template<typename Class_Type>
 registration::class_<Class_Type> make_registration_class()
 {
@@ -99,9 +41,16 @@ registration::class_<Class_Type> make_registration_class()
 template<typename Class_Type>
 void register_methods(registration::class_<Class_Type> & clazz)
 {
-    template for (auto method : get_methods<Class_Type>())
+    constexpr meta::member_fn_range member_funcs(reflexpr(Class_Type));
+    template for (constexpr auto func : member_funcs)
     {
-        clazz.method(method.name, method.pointer);
+        if constexpr (!meta::is_constructor(func) &&
+                      !meta::is_destructor(func) &&
+                      !meta::is_copy_assignment_operator(func) &&
+                      !meta::is_move_assignment_operator(func))
+        {
+            clazz.method(meta::name_of(func), &Class_Type::unqualid(func));
+        }
     }
 }
 
